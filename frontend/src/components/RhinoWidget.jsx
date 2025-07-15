@@ -36,8 +36,38 @@ const RhinoWidget = ({ onClose }) => {
   }, [apiKey]);
 
   return (
-    <div className="widget-container">
-      {/* ... остальной JSX остается без изменений ... */}
+       <div className="widget-container">
+         <svg
+           onClick={onClose}
+           className="close-btn"
+           width="24"
+           height="24"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           strokeWidth="2"
+           strokeLinecap="round"
+           strokeLinejoin="round"
+         >
+           <path d="M18 6L6 18" />
+           <path d="M6 6L18 18" />
+         </svg>
+         <div className="widget-content">
+           <h3>Bridge to $MORI</h3>
+           {isLoading && (
+             <div className="loading">
+               <div className="spinner"></div>
+               <p>Loading Rhino Widget...</p>
+             </div>
+           )}
+           {error && (
+             <div className="error">
+               <p>❌ {error}</p>
+               <button onClick={() => window.location.reload()}>
+                 Retry
+               </button>
+             </div>
+           )}
       {!error && !isLoading && (
         <iframe
           id="rhino-terminal"
@@ -47,6 +77,7 @@ const RhinoWidget = ({ onClose }) => {
           frameBorder="0"
         />
       )}
+      </div>
     </div>
   );
 };
