@@ -7,18 +7,20 @@ const JupiterWidget = ({ onClose }) => {
   const { wallet, connect } = useWallet();
 
   useEffect(() => {
+    console.log('Checking Jupiter Terminal availability...');
     if (typeof window !== 'undefined' && window.Jupiter) {
+      console.log('Initializing Jupiter Terminal in Modal mode');
       window.Jupiter.init({
-        displayMode: 'modal', // Используем Modal-режим
+        displayMode: 'modal',
         containerStyles: {
           width: '100%',
           height: '500px',
           borderRadius: '12px',
           overflow: 'hidden',
         },
-        endpoint: 'https://api.mainnet-beta.solana.com', // Публичный Solana RPC
+        endpoint: 'https://api.mainnet-beta.solana.com',
         formProps: {
-          initialAmount: '10000000', // 10 USDT
+          initialAmount: '10000000',
           initialInputMint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
           initialOutputMint: '8ZHE4ow1a2jjxuoMfyExuNamQNALv5ekZhsBn5nMDf5e', // MORI
           fixedOutputMint: true,
@@ -30,15 +32,20 @@ const JupiterWidget = ({ onClose }) => {
           console.error('❌ Jupiter swap error:', error);
         },
       });
+    } else {
+      console.error('Jupiter Terminal not loaded');
     }
   }, []);
 
   useEffect(() => {
-    // Автоматическое подключение кошелька, если он доступен
+    console.log('Checking Phantom wallet availability...');
     if (!wallet && window.solana && window.solana.isPhantom) {
+      console.log('Attempting to connect Phantom wallet...');
       connect().catch((err) => {
         console.error('Failed to connect Phantom:', err);
       });
+    } else if (wallet) {
+      console.log('Wallet connected:', wallet.adapter.name);
     }
   }, [wallet, connect]);
 
@@ -67,7 +74,6 @@ const JupiterWidget = ({ onClose }) => {
   );
 };
 
-// Оборачиваем компонент в WalletProvider
 const JupiterWidgetWithWallet = ({ onClose }) => {
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 

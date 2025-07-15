@@ -1,7 +1,7 @@
 # Этап сборки
 FROM node:18-alpine AS builder
 
-RUN apk add --no-cache python3 py3-pip make g++ linux-headers
+RUN apk add --no-cache python3 py3-pip make g++ linux-headers libudev-zero-dev
 
 WORKDIR /app
 COPY package.json package-lock.json ./
