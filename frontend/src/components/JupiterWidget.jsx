@@ -9,18 +9,13 @@ const JupiterWidget = ({ onClose }) => {
   useEffect(() => {
     console.log('Checking Jupiter Terminal availability...');
     if (typeof window !== 'undefined' && window.Jupiter) {
-      console.log('Initializing Jupiter Terminal in Modal mode');
+      console.log('Initializing Jupiter Terminal in Integrated mode');
       window.Jupiter.init({
-        displayMode: 'modal',
-        containerStyles: {
-          width: '100%',
-          height: '500px',
-          borderRadius: '12px',
-          overflow: 'hidden',
-        },
+        displayMode: 'integrated',
+        integratedTargetId: 'jupiter-terminal',
         endpoint: 'https://api.mainnet-beta.solana.com',
         formProps: {
-          initialAmount: '10000000',
+          initialAmount: '10000000', // 10 USDT
           initialInputMint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
           initialOutputMint: '8ZHE4ow1a2jjxuoMfyExuNamQNALv5ekZhsBn5nMDf5e', // MORI
           fixedOutputMint: true,
@@ -68,7 +63,7 @@ const JupiterWidget = ({ onClose }) => {
       </svg>
       <div className="widget-content">
         <h3>Buy $MORI Token</h3>
-        <div id="jupiter-terminal" className="terminal"></div>
+        <div id="jupiter-terminal" className="terminal" style={{ width: '400px', height: '568px' }}></div>
       </div>
     </div>
   );
