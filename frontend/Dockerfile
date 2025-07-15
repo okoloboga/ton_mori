@@ -1,6 +1,9 @@
 # Этап сборки
 FROM node:18-alpine AS builder
 
+# Установим Python и зависимости для node-gyp
+RUN apk add --no-cache python3 py3-pip make g++ linux-headers
+
 # Установим рабочую директорию
 WORKDIR /app
 
@@ -28,11 +31,6 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Скопируем собранные файлы из этапа сборки
 COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Скопируем SSL-сертификаты (если они не монтируются через volumes)
-# Если сертификаты монтируются через docker-compose, эти строки можно закомментировать
-# COPY cert.pem /etc/ssl/cert.pem
-# COPY key.pem /etc/ssl/key.pem
 
 # Открываем порты
 EXPOSE 80 443
