@@ -1,41 +1,23 @@
 # Этап сборки
-   FROM node:18-alpine AS builder
+FROM node:18-alpine AS builder
 
-   # Установим Python и зависимости для node-gyp
-   RUN apk add --no-cache python3 py3-pip make g++ linux-headers
+RUN apk add --no-cache python3 py3-pip make g++ linux-headers
 
-   # Установим рабочую директорию
-   WORKDIR /app
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install --no-cache
 
-   # Скопируем package.json и package-lock.json
-   COPY package.json package-lock.json ./
+# Копируем ВСЕ файлы включая .env
+COPY . .
 
-   # Установим зависимости
-   RUN npm install --no-cache
+# Проверяем что .env скопировался
+RUN ls -la && cat .env || echo "No .env file"
 
-   # Скопируем .env явно
-   COPY .env .env
+RUN npm run build
 
-   # Проверим, что .env скопировался
-   RUN cat .env || echo "Warning: .env file is missing or empty"
-
-   # Скопируем остальной код фронтенда
-   COPY . .
-
-   # Соберём приложение
-   RUN npm run build
-
-   # Этап продакшена
-   FROM nginx:alpine
-
-   # Скопируем конфигурацию Nginx
-   COPY nginx.conf /etc/nginx/nginx.conf
-
-   # Скопируем собранные файлы из этапа сборки
-   COPY --from=builder /app/dist /usr/share/nginx/html
-
-   # Открываем порты
-   EXPOSE 80 443
-
-   # Запускаем Nginx
-   CMD ["nginx", "-g", "daemon off;"]
+# Этап продакшена
+FROM nginx:alpine
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80 443
+CMD ["nginx", "-g", "daemon off;"]
