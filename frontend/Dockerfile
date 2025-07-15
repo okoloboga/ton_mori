@@ -18,7 +18,8 @@
 
    # Передадим RHINO_API_KEY как аргумент сборки
    ARG RHINO_API_KEY
-   ENV VITE_RHINO_API_KEY=$RHINO_API_KEY
+   # Создадим .env файл для Vite
+   RUN echo "VITE_RHINO_API_KEY=$RHINO_API_KEY" > .env
 
    # Соберём приложение
    RUN npm run build

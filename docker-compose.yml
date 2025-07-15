@@ -1,32 +1,30 @@
 version: '3.8'
 
-services:
-  bot:
-    build: ./bot
-    environment:
-      - BOT_TOKEN=${BOT_TOKEN}
-      - MINI_APP_URL=${MINI_APP_URL}
-    restart: unless-stopped
-    networks:
-      - bridge-network
+   services:
+     bot:
+       build: ./bot
+       environment:
+         - BOT_TOKEN=${BOT_TOKEN}
+         - MINI_APP_URL=${MINI_APP_URL}
+       restart: unless-stopped
+       networks:
+         - bridge-network
 
-  frontend:
-    build: 
-      context: ./frontend
-      args:
-        - RHINO_API_KEY=${RHINO_API_KEY}
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ${SSL_CERT_PATH}:/etc/ssl/cert.pem:ro
-      - ${SSL_KEY_PATH}:/etc/ssl/key.pem:ro
-    environment:
-      - VITE_RHINO_API_KEY=${RHINO_API_KEY}
-    restart: unless-stopped
-    networks:
-      - bridge-network
+     frontend:
+       build: 
+         context: ./frontend
+         args:
+           - RHINO_API_KEY=${RHINO_API_KEY}
+       ports:
+         - "80:80"
+         - "443:443"
+       volumes:
+         - ${SSL_CERT_PATH}:/etc/ssl/cert.pem:ro
+         - ${SSL_KEY_PATH}:/etc/ssl/key.pem:ro
+       restart: unless-stopped
+       networks:
+         - bridge-network
 
-networks:
-  bridge-network:
-    driver: bridge
+   networks:
+     bridge-network:
+       driver: bridge

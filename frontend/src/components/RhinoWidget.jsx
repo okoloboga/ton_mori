@@ -7,9 +7,9 @@ import { useEffect, useState } from 'react';
      const apiKey = process.env.VITE_RHINO_API_KEY;
 
      useEffect(() => {
-       console.log('VITE_RHINO_API_KEY:', apiKey); // Логирование для отладки
-       if (!apiKey || apiKey === 'INSERT_API_KEY') {
-         setError('Rhino API key is missing or invalid');
+       console.log('VITE_RHINO_API_KEY:', apiKey);
+       if (!apiKey) {
+         setError('Rhino API key is missing');
          setIsLoading(false);
          return;
        }
@@ -17,12 +17,14 @@ import { useEffect, useState } from 'react';
        const iframe = document.getElementById('rhino-terminal');
        if (iframe) {
          iframe.onload = () => {
+           console.log('Rhino iframe loaded successfully');
            setIsLoading(false);
            if (window.Telegram?.WebApp?.HapticFeedback) {
              window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
            }
          };
          iframe.onerror = () => {
+           console.error('Rhino iframe failed to load');
            setError('Failed to load Rhino Widget (Error 422)');
            setIsLoading(false);
          };
