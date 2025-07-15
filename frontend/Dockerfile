@@ -13,7 +13,13 @@
    # Установим зависимости
    RUN npm install --no-cache
 
-   # Скопируем весь код фронтенда
+   # Скопируем .env явно
+   COPY .env .env
+
+   # Проверим, что .env скопировался
+   RUN cat .env || echo "Warning: .env file is missing or empty"
+
+   # Скопируем остальной код фронтенда
    COPY . .
 
    # Соберём приложение
