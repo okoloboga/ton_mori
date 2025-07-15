@@ -1,51 +1,46 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { WalletProvider, useWallet } from '@solana/wallet-adapter-react';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 
 const JupiterWidget = ({ onClose }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { wallet, connect } = useWallet();
 
   useEffect(() => {
-    const initJupiter = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        if (typeof window.Jupiter !== 'undefined') {
-          window.Jupiter.init({
-            displayMode: 'integrated',
-            integratedTargetId: 'integrated-terminal',
-            endpoint: 'https://api.mainnet-beta.solana.com',
-            formProps: {
-              initialAmount: '10000000', // 10 USDT
-              initialInputMint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
-              initialOutputMint: '8ZHE4ow1a2jjxuoMfyExuNamQNALv5ekZhsBn5nMDf5e', // MORI
-              fixedOutputMint: true,
-            },
-            onSuccess: ({ txid }) => {
-              console.log('✅ Jupiter swap success:', txid);
-              if (window.Telegram?.WebApp?.HapticFeedback) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-              }
-            },
-            onError: (error) => {
-              console.error('❌ Jupiter swap error:', error);
-              setError(error.message);
-            },
-          });
-
-          setIsLoading(false);
-        } else {
-          throw new Error('Jupiter script not loaded');
-        }
-      } catch (err) {
-        console.error('❌ Jupiter initialization error:', err);
-        setError('Failed to load Jupiter Terminal');
-        setIsLoading(false);
-      }
-    };
-
-    initJupiter();
+    if (typeof window !== 'undefined' && window.Jupiter) {
+      window.Jupiter.init({
+        displayMode: 'modal', // Используем Modal-режим
+        containerStyles: {
+          width: '100%',
+          height: '500px',
+          borderRadius: '12px',
+          overflow: 'hidden',
+        },
+        endpoint: 'https://api.mainnet-beta.solana.com', // Публичный Solana RPC
+        formProps: {
+          initialAmount: '10000000', // 10 USDT
+          initialInputMint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', // USDT
+          initialOutputMint: '8ZHE4ow1a2jjxuoMfyExuNamQNALv5ekZhsBn5nMDf5e', // MORI
+          fixedOutputMint: true,
+        },
+        onSuccess: ({ txid }) => {
+          console.log('✅ Jupiter swap success:', txid);
+        },
+        onError: (error) => {
+          console.error('❌ Jupiter swap error:', error);
+        },
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    // Автоматическое подключение кошелька, если он доступен
+    if (!wallet && window.solana && window.solana.isPhantom) {
+      connect().catch((err) => {
+        console.error('Failed to connect Phantom:', err);
+      });
+    }
+  }, [wallet, connect]);
 
   return (
     <div className="widget-container">
@@ -66,24 +61,23 @@ const JupiterWidget = ({ onClose }) => {
       </svg>
       <div className="widget-content">
         <h3>Buy $MORI Token</h3>
-        {isLoading && (
-          <div className="loading">
-            <div className="spinner"></div>
-            <p>Loading Jupiter Terminal...</p>
-          </div>
-        )}
-        {error && (
-          <div className="error">
-            <p>❌ {error}</p>
-            <button onClick={() => window.location.reload()}>
-              Retry
-            </button>
-          </div>
-        )}
-        <div id="integrated-terminal" className="terminal"></div>
+        <div id="jupiter-terminal" className="terminal"></div>
       </div>
     </div>
   );
 };
 
-export default JupiterWidget;
+// Оборачиваем компонент в WalletProvider
+const JupiterWidgetWithWallet = ({ onClose }) => {
+  const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
+
+  return (
+    <WalletProvider wallets={wallets} autoConnect>
+      <WalletModalProvider>
+        <JupiterWidget onClose={onClose} />
+      </WalletModalProvider>
+    </WalletProvider>
+  );
+};
+
+export default JupiterWidgetWithWallet;
