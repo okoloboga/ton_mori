@@ -26,9 +26,6 @@ const RhinoWidget = ({ onClose }) => {
         console.log('Rhino iframe found in DOM');
         iframe.onload = () => {
           console.log('Rhino iframe loaded successfully');
-          if (window.Telegram?.WebApp?.HapticFeedback) {
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-          }
         };
         iframe.onerror = () => {
           console.error('Rhino iframe failed to load');

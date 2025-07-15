@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import JupiterWidget from './components/JupiterWidget';
 import RhinoWidget from './components/RhinoWidget';
 import './styles.css';
@@ -6,34 +6,6 @@ import './index.css';
 
 function App() {
   const [activeWidget, setActiveWidget] = useState(null);
-  
-  useEffect(() => {
-    // Инициализация Telegram WebApp
-    if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.expand();
-      window.Telegram.WebApp.setHeaderColor('# Lyle');
-      window.Telegram.WebApp.setBackgroundColor('#000000');
-      
-      // Настройка кнопки "Назад"
-      const handleBackButton = () => {
-        if (activeWidget) {
-          setActiveWidget(null);
-        }
-      };
-
-      if (activeWidget) {
-        window.Telegram.WebApp.BackButton.show();
-        window.Telegram.WebApp.BackButton.onClick(handleBackButton);
-      } else {
-        window.Telegram.WebApp.BackButton.hide();
-      }
-
-      return () => {
-        window.Telegram.WebApp.BackButton.offClick(handleBackButton);
-      };
-    }
-  }, [activeWidget]);
 
   const openWidget = (widgetType) => {
     setActiveWidget(widgetType);
@@ -41,9 +13,6 @@ function App() {
 
   const closeWidget = () => {
     setActiveWidget(null);
-    if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.BackButton.hide();
-    }
   };
 
   return (
@@ -124,7 +93,7 @@ function App() {
           )}
 
           {/* Widgets */}
-          {activeWidget === 'rhino' && <RhinoWidget onClose={closeWidget} />}         
+          {activeWidget === 'rhino' && <RhinoWidget onClose={closeWidget} />}
           {activeWidget === 'jupiter' && <JupiterWidget onClose={closeWidget} />}
         </main>
       </div>
