@@ -5,7 +5,7 @@ RUN apk add --no-cache python3 py3-pip make g++ linux-headers libudev-zero-dev
 
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm install --no-cache
+RUN npm install
 
 # Копируем ВСЕ файлы включая .env
 COPY . .
