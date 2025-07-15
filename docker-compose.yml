@@ -13,8 +13,6 @@ services:
   frontend:
     build: 
       context: ./frontend
-      args:
-        - RHINO_API_KEY=${RHINO_API_KEY}
     ports:
       - "80:80"
       - "443:443"
