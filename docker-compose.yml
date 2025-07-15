@@ -16,8 +16,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    env_file:
-      - ./frontend/.env
     volumes:
       - ${SSL_CERT_PATH}:/etc/ssl/cert.pem:ro
       - ${SSL_KEY_PATH}:/etc/ssl/key.pem:ro
