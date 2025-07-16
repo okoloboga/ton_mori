@@ -62,8 +62,7 @@ const JupiterWidget = ({ onClose }) => {
         <path d="M6 6L18 18" />
       </svg>
       <div className="widget-content">
-        <h3>Buy $MORI Token</h3>
-        <div id="jupiter-terminal" className="terminal" style={{ width: '400px', height: '568px' }}></div>
+        <div id="jupiter-terminal" className="terminal" style={{ width: '400px', height: '570px' }}></div>
       </div>
     </div>
   );
