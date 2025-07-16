@@ -6,7 +6,7 @@ import './index.css';
 
 function App() {
   const [activeWidget, setActiveWidget] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false); // Добавляем состояние
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const openWidget = (widgetType) => {
     setActiveWidget(widgetType);
@@ -17,7 +17,7 @@ function App() {
   };
 
   const toggleMenu = () => {
-    setMenuOpen(!menuOpen); // Переключаем меню
+    setMenuOpen(!menuOpen);
   };
 
   return (
@@ -81,7 +81,7 @@ function App() {
                   className="open-bridge-btn"
                   onClick={() => openWidget('rhino')}
                 >
-                  GET SOL USDT
+                  GET USDT
                 </button>
               </div>
 
